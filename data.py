@@ -1,4 +1,4 @@
-# This directory contains code for downloading and proceesing data
+# This file contains code for downloading and proceesing data
 
 import pickle
 import os
@@ -50,7 +50,15 @@ if __name__ == "__main__":
     data = np.concatenate(data_arrays)
     labels = np.array(labels)
     
-    np.save('data/images.npy', data)
-    np.save('data/labels.npy', labels)
+    np.save('data/train_images.npy', data)
+    np.save('data/train_labels.npy', labels)
+
+    dt = unpickle(test_file[0])
+    data, label = dt[b'data'], dt[b'labels']
+    data = data.reshape([10000,32,32,3])
+    label = np.array(label)
+
+    np.save('data/test_images.npy', data)
+    np.save('data/test_labels.npy', label)
 
     print(f"\n{bcolors.OKGREEN}Data Saved to ./data/ directory in npy format{bcolors.ENDC}")
