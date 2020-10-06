@@ -30,7 +30,7 @@ class ModelToBreak(nn.Module):
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
+        x = x.reshape(-1, 16 * 5 * 5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -61,7 +61,11 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
 
         for i in range(0, len(train_data[1])//batch_size):
             indx = np.arange((i*batch_size),(i*batch_size)+batch_size)
-            train_images, train_labels = train_data[0][indx].to(device), train_data[1][indx].to(device)
+            train_images, train_labels = train_data[0][indx], train_data[1][indx]
+            train_images = torch.from_numpy(train_images).to(device = device, dtype=torch.float)
+            train_images = train_images.permute((0,3,1,2))
+            print(train_images.shape)
+            train_labels = torch.from_numpy(train_labels).to(device = device, dtype=torch.float)
 
             optimizer.zero_grad()
             output = model(train_images)
@@ -77,7 +81,12 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
         with torch.no_grad():
             for i in range(0, len(test_data[1])//batch_size):
                 indx = np.arange((i*batch_size),(i*batch_size)+batch_size)
-                test_images, test_labels = test_data[0][indx].to(device), test_data[1][indx].to(device)
+                test_images, test_labels = test_data[0][indx], test_data[1][indx]
+                test_images = torch.from_numpy(test_images).to(device = device, dtype=torch.float)
+                test_images = test_images.permute((0,3,1,2))
+                print(test_images.shape)
+                test_labels = torch.from_numpy(test_labels).to(device = device, dtype=torch.float)
+
                 output = model(test_images)
                 loss = loss_fun(output,test_labels) 
                 valid_loss += loss.item()
