@@ -93,4 +93,4 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
                 correct += (predicted == test_labels).sum().item()
         valid_loss /= len(test_data[1])
 
-        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.2f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.2f}, {bcolors.OKGREEN}accuracy:{bcolors.ENDC} {(correct / total):.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f}')
+        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.5f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.5f}, {bcolors.OKGREEN}accuracy:{bcolors.ENDC} {(correct / total):.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f}')
