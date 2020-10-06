@@ -19,6 +19,8 @@ if __name__ == "__main__":
     train_data = (np.load('./data/train_images.npy'), np.load('./data/train_labels.npy'))
     test_data  = (np.load('./data/test_images.npy'), np.load('./data/test_labels.npy'))
 
+    print("Strting Training.....\n")
     train(model, optimizer, loss_fun, train_data, test_data, device=device)
+    print("Training Completed.....\n")
 
     torch.save(model, './saved_models/model')
