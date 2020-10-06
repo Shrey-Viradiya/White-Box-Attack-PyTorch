@@ -9,6 +9,8 @@ Here, *Fast Gradient Sign Method* is used. The idea is to take the image we want
 
 ## Instructions
 
-1. Run data.py first. It will download the data and extract it to the format necessary.
+1. Install required modules from requirements.txt
 
-2. Run main.py
+2. Run data.py first. It will download the data and extract it to the format necessary.
+
+3. Run main.py
