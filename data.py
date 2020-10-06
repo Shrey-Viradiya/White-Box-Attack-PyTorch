@@ -53,4 +53,4 @@ if __name__ == "__main__":
     np.save('data/images.npy', data)
     np.save('data/labels.npy', labels)
 
-    print(f"{bcolors.OKGREEN}Data Saved to ./data/ directory in npy format{bcolors.ENDC}")
+    print(f"\n{bcolors.OKGREEN}Data Saved to ./data/ directory in npy format{bcolors.ENDC}")
