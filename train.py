@@ -64,8 +64,7 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
             train_images, train_labels = train_data[0][indx], train_data[1][indx]
             train_images = torch.from_numpy(train_images).to(device = device, dtype=torch.float)
             train_images = train_images.permute((0,3,1,2))
-            print(train_images.shape)
-            train_labels = torch.from_numpy(train_labels).to(device = device, dtype=torch.float)
+            train_labels = torch.from_numpy(train_labels).to(device = device, dtype=torch.long)
 
             optimizer.zero_grad()
             output = model(train_images)
@@ -84,8 +83,7 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
                 test_images, test_labels = test_data[0][indx], test_data[1][indx]
                 test_images = torch.from_numpy(test_images).to(device = device, dtype=torch.float)
                 test_images = test_images.permute((0,3,1,2))
-                print(test_images.shape)
-                test_labels = torch.from_numpy(test_labels).to(device = device, dtype=torch.float)
+                test_labels = torch.from_numpy(test_labels).to(device = device, dtype=torch.long)
 
                 output = model(test_images)
                 loss = loss_fun(output,test_labels) 
@@ -95,4 +93,4 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
                 correct += (predicted == test_labels).sum().item()
         valid_loss /= len(test_data[1])
 
-        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.2f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.2f}, {bcolors.OKGREEN}accuracy:{bcolors.ENDC} {(correct / total):.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start}')
+        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.2f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.2f}, {bcolors.OKGREEN}accuracy:{bcolors.ENDC} {(correct / total):.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f}')
