@@ -36,7 +36,7 @@ class ModelToBreak(nn.Module):
         x = self.fc3(x)
         return x
 
-def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,epochs = 20, device = 'cuda'):
+def train(model, optimizer, loss_fun, train_data ,test_data, epochs = 20, device = 'cuda'):
     '''
     Train function:
 
@@ -45,8 +45,8 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
     model       : PyTorch Model
     optimizer   : optimizer object
     loss_fun    : Loss Function object
-    train_data  : Tuple with train data at index 0 and train label at index 1
-    test_data   : Tuple with test  data at index 0 and test  label at index 1
+    train_data  : CIFAR10 train dataloader
+    test_data   : CIFAR10 test  dataloader
     batch_size  : default value 100
     epochs      : default value 20
     device      : 'cuda' or 'cpu', default 'cuda'
@@ -55,16 +55,17 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
 
     for epoch in range(epochs):
         start = time.time()
+
         training_loss = 0.0
         valid_loss = 0.0
-        model.train()
 
-        for i in range(0, len(train_data[1])//batch_size):
-            indx = np.arange((i*batch_size),(i*batch_size)+batch_size)
-            train_images, train_labels = train_data[0][indx], train_data[1][indx]
-            train_images = torch.from_numpy(train_images).to(device = device, dtype=torch.float)
-            train_images = train_images.permute((0,3,1,2))
-            train_labels = torch.from_numpy(train_labels).to(device = device, dtype=torch.long)
+        model.train()
+        correct = 0 
+        total = 0
+        for batch in train_data:
+            train_images, train_labels = batch
+            train_images = train_images.to(device)
+            train_labels = train_labels.to(device)
 
             optimizer.zero_grad()
             output = model(train_images)
@@ -72,18 +73,19 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
             loss.backward()
             optimizer.step()
             training_loss += loss.item()
-        training_loss /= len(train_data[1])
+            _, predicted = torch.max(output.data, 1)
+            total += train_labels.size(0)
+            correct += (predicted == train_labels).sum().item()
+        training_accuracy = correct/total * 100
 
         model.eval()
         correct = 0 
         total = 0
         with torch.no_grad():
-            for i in range(0, len(test_data[1])//batch_size):
-                indx = np.arange((i*batch_size),(i*batch_size)+batch_size)
-                test_images, test_labels = test_data[0][indx], test_data[1][indx]
-                test_images = torch.from_numpy(test_images).to(device = device, dtype=torch.float)
-                test_images = test_images.permute((0,3,1,2))
-                test_labels = torch.from_numpy(test_labels).to(device = device, dtype=torch.long)
+            for batch in test_data:
+                test_images, test_labels = batch
+                test_images = test_images.to(device)
+                test_labels = test_labels.to(device)
 
                 output = model(test_images)
                 loss = loss_fun(output,test_labels) 
@@ -91,6 +93,5 @@ def train(model, optimizer, loss_fun, train_data ,test_data, batch_size = 100,ep
                 _, predicted = torch.max(output.data, 1)
                 total += test_labels.size(0)
                 correct += (predicted == test_labels).sum().item()
-        valid_loss /= len(test_data[1])
-
-        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.5f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.5f}, {bcolors.OKGREEN}accuracy:{bcolors.ENDC} {(correct / total):.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f}')
+        testing_accuracy = correct/total * 100
+        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.5f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.5f}, {bcolors.OKGREEN}Training accuracy:{bcolors.ENDC} {training_accuracy:.2f}, {bcolors.OKGREEN}Testing accuracy:{bcolors.ENDC} {testing_accuracy:.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f} s')
