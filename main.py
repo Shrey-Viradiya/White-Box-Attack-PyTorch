@@ -5,14 +5,8 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 from train import ModelToBreak, train
+from attack import Launch
 import matplotlib.pyplot as plt
-
-def fgsm(input_tensor, labels, loss_function, model, epsilon=0.02):
-    outputs = model(input_tensor)
-    loss = loss_function(outputs, labels)
-    loss.backward(retain_graph=True)
-    vals = torch.sign(input_tensor.grad) * epsilon
-    return vals
 
 if __name__ == "__main__":
     
@@ -48,34 +42,5 @@ if __name__ == "__main__":
     print("Training Completed.....\n")
 
     model = torch.load('./saved_models/best_model')
-    model.to(device)
-
-    image, label = next(iter(testloader))
-    image = image.to(device)
-    image.requires_grad = True
-    label = label.to(device)
-
-    adversarial_mask = fgsm(image, label, loss_fun,  model, epsilon=0.5)
-
-    real_pred = model(image).max(1, keepdim=True)[1].item()
-    adve_pred = model(adversarial_mask).max(1, keepdim=True)[1].item()
-    print(f"Real Label: {label.item()}, Predicted Label: {real_pred}, Adversarial Mask Prediction: {adve_pred}")
     
-    title = f"Real Label: {classes[label.item()]}, Predicted Label: {classes[real_pred]}, Adversarial Mask Prediction: {classes[adve_pred]}"
-    print(title)
-
-    # plot the images
-
-    plt.figure(figsize = (4,2))
-
-    plt.suptitle(title)
-    plt.subplot(1,2,1)
-    plt.imshow(image.squeeze().permute(1,2,0).cpu().detach().numpy())
-    plt.axis(False)
-
-    plt.subplot(1,2,2)
-    plt.imshow(adversarial_mask.squeeze().permute(1,2,0).cpu().detach().numpy())
-    plt.axis(False)
-
-    plt.savefig('./output.png', dpi = 300)
-    
+    Launch(model, testloader, loss_fun, classes, device= device)    
