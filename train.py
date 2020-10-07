@@ -52,6 +52,7 @@ def train(model, optimizer, loss_fun, train_data ,test_data, epochs = 20, device
     device      : 'cuda' or 'cpu', default 'cuda'
     '''
 
+    max_accurracy = 0.0
 
     for epoch in range(epochs):
         start = time.time()
@@ -94,4 +95,9 @@ def train(model, optimizer, loss_fun, train_data ,test_data, epochs = 20, device
                 total += test_labels.size(0)
                 correct += (predicted == test_labels).sum().item()
         testing_accuracy = correct/total * 100
-        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.5f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.5f}, {bcolors.OKGREEN}Training accuracy:{bcolors.ENDC} {training_accuracy:.2f}, {bcolors.OKGREEN}Testing accuracy:{bcolors.ENDC} {testing_accuracy:.2f}, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f} s')
+
+        if (testing_accuracy > max_accurracy):
+                max_accurracy = testing_accuracy
+                torch.save(model, './saved_models/best_model')
+
+        print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch + 1}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.5f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.5f}, {bcolors.OKGREEN}Training accuracy:{bcolors.ENDC} {training_accuracy:.2f} %, {bcolors.OKGREEN}Testing accuracy:{bcolors.ENDC} {testing_accuracy:.2f} %, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f} s')
