@@ -20,17 +20,18 @@ class bcolors:
 class ModelToBreak(nn.Module):
     def __init__(self):
         super(ModelToBreak, self).__init__()
-        self.conv1 = nn.Conv2d(3, 24, 5)
+        self.conv1 = nn.Conv2d(3, 48, 5)
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(24, 64, 5)
-        self.fc1 = nn.Linear(64 * 5 * 5, 480)
-        self.fc2 = nn.Linear(480, 120)
+        self.conv2 = nn.Conv2d(48, 96, 5)
+        self.fc1 = nn.Linear(96 * 34 * 34, 240)
+        self.fc2 = nn.Linear(240, 120)
         self.fc3 = nn.Linear(120, 10)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.reshape(-1, 64 * 5 * 5)
+        # print(x.shape)
+        x = x.reshape(-1, 96 * 34 * 34)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)

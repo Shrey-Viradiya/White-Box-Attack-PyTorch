@@ -12,3 +12,8 @@ Here, *Fast Gradient Sign Method* is used. The idea is to take the image we want
 1. Install required modules from requirements.txt
 
 2. Run main.py
+
+## Datasets used:
+
+- Intel Classification Competition: https://www.kaggle.com/puneet6060/intel-image-classification/version/2
+- CIFAR 10 Dataset
