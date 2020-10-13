@@ -7,7 +7,7 @@ def fgsm(input_tensor, labels, loss_function, model, epsilon=0.02):
     outputs = model(input_tensor)
     loss = loss_function(outputs, labels)
     loss.backward(retain_graph=True)
-    vals = torch.sign(input_tensor.grad) * epsilon
+    vals = input_tensor + torch.sign(input_tensor.grad) * epsilon
     return vals
 
 def Launch(model, testloader, loss_fun, classes, device = 'cuda'):
@@ -19,11 +19,13 @@ def Launch(model, testloader, loss_fun, classes, device = 'cuda'):
     i = 0
 
     for image, label in testloader:        
-        image = image.to(device)
+        image = image.to(device)[0]
+        image = image.unsqueeze(0)
         image.requires_grad = True
-        label = label.to(device)
-
-        epsilon = 0.2
+        label = label.to(device)[0]
+        label = label.unsqueeze(0)
+        # print(label)
+        epsilon = 0.05
         adversarial_mask = fgsm(image, label, loss_fun,  model, epsilon=epsilon)
 
         real_label = classes[label.item()]

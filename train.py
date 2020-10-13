@@ -20,18 +20,22 @@ class bcolors:
 class ModelToBreak(nn.Module):
     def __init__(self):
         super(ModelToBreak, self).__init__()
-        self.conv1 = nn.Conv2d(3, 48, 5)
+        self.conv1 = nn.Conv2d(3, 16, 5)        
+        self.conv2 = nn.Conv2d(16, 32, 5)
+        self.conv3 = nn.Conv2d(32, 64, 5)
+        self.conv4 = nn.Conv2d(64, 128, 5)
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(48, 96, 5)
-        self.fc1 = nn.Linear(96 * 34 * 34, 240)
+        self.fc1 = nn.Linear(128 * 5 * 5, 240)
         self.fc2 = nn.Linear(240, 120)
         self.fc3 = nn.Linear(120, 10)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
+        x = self.pool(F.relu(self.conv3(x)))
+        x = self.pool(F.relu(self.conv4(x)))
         # print(x.shape)
-        x = x.reshape(-1, 96 * 34 * 34)
+        x = x.reshape(-1, 128 * 5 * 5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -99,6 +103,6 @@ def train(model, optimizer, loss_fun, train_data ,test_data, epochs = 20, device
 
         if (testing_accuracy > max_accurracy):
                 max_accurracy = testing_accuracy
-                torch.save(model, './saved_models/best_model')
+                torch.save(model, './saved_models/best_model_2')
 
         print(f'{bcolors.OKGREEN}Epoch:{bcolors.ENDC} {epoch + 1}, {bcolors.OKGREEN}Training Loss:{bcolors.ENDC} {training_loss:.5f}, {bcolors.OKGREEN}Validation Loss:{bcolors.ENDC} {valid_loss:.5f}, {bcolors.OKGREEN}Training accuracy:{bcolors.ENDC} {training_accuracy:.2f} %, {bcolors.OKGREEN}Testing accuracy:{bcolors.ENDC} {testing_accuracy:.2f} %, {bcolors.OKGREEN}time:{bcolors.ENDC} {time.time() - start:.2f} s')
