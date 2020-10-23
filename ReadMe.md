@@ -17,3 +17,8 @@ Here, *Fast Gradient Sign Method* is used. The idea is to take the image we want
 
 - Intel Classification Competition: https://www.kaggle.com/puneet6060/intel-image-classification/version/2
 - CIFAR 10 Dataset
+
+## Output:
+
+![Output_1](https://github.com/Shrey-Viradiya/White-Box-Attack-PyTorch/blob/master/outputs_2/output_forest_street_0.png)
+![Output_2](https://github.com/Shrey-Viradiya/White-Box-Attack-PyTorch/blob/master/outputs_2/output_sea_glacier_5.png)
