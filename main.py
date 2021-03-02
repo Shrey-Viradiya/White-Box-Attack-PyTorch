@@ -1,12 +1,7 @@
-import numpy as np
-import time
 import torch
-import torch.nn as nn
 import torchvision
-import torchvision.transforms as transforms
 from train import ModelToBreak, train
 from attack import Launch
-import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     
@@ -55,7 +50,7 @@ if __name__ == "__main__":
 
 
     print("Strting Training.....\n")
-    # train(model, optimizer, loss_fun, trainloader, valloader, epochs = 10, device=device)
+    train(model, optimizer, loss_fun, trainloader, valloader, epochs = 10, device=device)
     print("Training Completed.....\n")
 
     model = torch.load('./saved_models/best_model_2')
